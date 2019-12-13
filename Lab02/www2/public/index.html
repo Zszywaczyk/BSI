@@ -1,0 +1,57 @@
+<html>
+    <head>
+
+    </head>
+    <body>
+        <button style="display: block; width: 30%; height: 40px; margin: 300px auto 0 auto;" id="get" onclick="GET()">GET</button>
+        <button style="display: block; width: 30%; height: 40px; margin: 10px auto;" id="post" onclick="POST()">POST</button>
+        <textarea style="display: block; width: 40%; height: 100px; margin: 10px auto; padding-left: 100px" id="textio" ></textarea>
+
+        <script>
+
+/*const url = 'http://localhost:9000/package.json';
+const data = { username: 'example' };
+
+try {
+  const response =  fetch(url, {
+    method: 'POST', // or 'PUT'
+    body: JSON.stringify(data), // data can be `string` or {object}!
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  const json =  response.json();
+  console.log('Success:', JSON.stringify(json));
+} catch (error) {
+  console.error('Error:', error);
+}*/
+
+            async function GET(){
+                const response = await fetch('http://chowrat.net:3000/');
+                const myJson = await response;
+                var resoult = response.json();
+                
+                resoult.then(function(valuee) {
+                  document.getElementById("textio").value = JSON.stringify(valuee);
+                  // expected output: "foo"
+                  //console.log(JSON.stringify(valuee));
+                });
+                //document.getElementById("textio").value = resoult;
+            }
+            async function POST(){
+                const url = 'http://chowrat.net:3000/'       
+                // Default options are marked with *
+                const response = await fetch(url, {
+                    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                    headers: {
+                    'Content-Type': 'application/json'
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: document.getElementById('textio').value
+                });
+                //return await response.json(); // parses JSON response into native JavaScript objects
+                console.log(await response);
+            }
+        </script>
+    </body>
+</html>
