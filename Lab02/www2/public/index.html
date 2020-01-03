@@ -8,26 +8,9 @@
         <textarea style="display: block; width: 40%; height: 100px; margin: 10px auto; padding-left: 100px" id="textio" ></textarea>
 
         <script>
-
-/*const url = 'http://localhost:9000/package.json';
-const data = { username: 'example' };
-
-try {
-  const response =  fetch(url, {
-    method: 'POST', // or 'PUT'
-    body: JSON.stringify(data), // data can be `string` or {object}!
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  });
-  const json =  response.json();
-  console.log('Success:', JSON.stringify(json));
-} catch (error) {
-  console.error('Error:', error);
-}*/
-
+          
             async function GET(){
-                const response = await fetch('http://chowrat.net:3000/');
+                const response = await fetch('https://chowrat.org/rest');
                 const myJson = await response;
                 var resoult = response.json();
                 
@@ -39,7 +22,7 @@ try {
                 //document.getElementById("textio").value = resoult;
             }
             async function POST(){
-                const url = 'http://chowrat.net:3000/'       
+                const url = 'https://chowrat.org/rest'
                 // Default options are marked with *
                 const response = await fetch(url, {
                     method: 'POST', // *GET, POST, PUT, DELETE, etc.
