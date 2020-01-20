@@ -7,8 +7,12 @@ var http = require('http')
 var router = express.Router()
 var path = require('path')
 var forceSsl = require('express-force-ssl');
+var axios = require('axios');
 
-
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: true,
+  cert: fs.readFileSync(path.join(__dirname,'sec/chowrat.net.crt'))
+})
 
 // simple logger for this router's requests
 // all requests to this router will first hit this middleware
@@ -48,8 +52,15 @@ app.get('/', function(req, res){
 })
 
 app.get('/rest', function(req, res){
-})
+  axios.get('https://chowrat.net:3000',{ httpsAgent, 
+  headers: {origin: 'https://chowrat.org/'} })
+  .then((rest) => {
+    //console.log(rest.data);
+    res.send(rest.data);
+  });
+});
 app.post('/rest', function(req, res){
+  axios.post('https://chowrat.net/')
 })
 
 
