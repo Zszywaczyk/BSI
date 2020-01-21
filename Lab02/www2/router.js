@@ -60,7 +60,7 @@ app.get('/rest', function(req, res){
   });
 });
 app.post('/rest', function(req, res){
-  axios.post('https://chowrat.net/')
+  axios.post('https://chowrat.net:3000/', req)
 })
 
 

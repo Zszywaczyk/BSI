@@ -27,7 +27,8 @@
                 const response = await fetch(url, {
                     method: 'POST', // *GET, POST, PUT, DELETE, etc.
                     headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    origin: 'https://chowrat.org/'
                     // 'Content-Type': 'application/x-www-form-urlencoded',
                     },
                     body: document.getElementById('textio').value
