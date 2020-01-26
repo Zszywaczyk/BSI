@@ -41,7 +41,7 @@ var users  = [
 
 
 //pozwalamy tylko strona z whitelist
-var whitelist = ['https://chowrat.org', 'https://chowrat.org/', 'https://chowrat.org/rest', 'https://chowrat.org/rest/https://chowrat.net/','chowrat.org','fd'];
+var whitelist = ['https://chowrat.org', 'https://chowrat.org/', 'https://chowrat.org/rest', 'https://chowrat.org/rest/https://chowrat.net/','chowrat.org'];
 var corsOptions = {
   origin: function (origin, callback) {
     //console.log(origin)
@@ -55,45 +55,42 @@ var corsOptions = {
       allowedHeaders: ['Content-Type', 'Authorization']
 }
 
-passport.use(new passporthttp.BasicStrategy( (login, password, done) => {
-  users.find((element, index, array)=>{
-    if(element.login===login){
-      if(element.password===password){
-        done(null, array)
-      }
-      else{
-        done(null, false)
-      }
-    }
-    if(index+1==users.length){
-      done(null, false)
-    }
-  })
-}))
-
 app.use(cors(corsOptions));
-/*app.use(cors({
-  origin: 'https://chowrato.com'
-}))*/
 
 //reczne ustawianie naglowka pozwalajacego
 app.all('/*', function(req, res, next) {
     //res.header('Access-Control-Allow-Origin', 'dsafds.com');
     //res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     //res.header('Access-Control-Allow-Headers', 'Content-Type');
-    
-    
-    //var log = req.headers.referer;
-    
-    //console.log(req);
-  
-    
-    //console.log('cos ' +JSON.stringify(req.headers.origin) );
-
-    //console.log('cos '+req.headers);
-  
     next();
   });
+
+  passport.use(new passporthttp.BasicStrategy( (login, password, done) => {
+    users.find((element, index, array)=>{
+      if(element.login===login){
+        if(element.password===password){
+          done(null, array)
+        }
+        else{
+          done(null, false)
+        }
+      }
+      if(index+1==users.length){
+        done(null, false)
+      }
+    })
+  }))
+
+  app.get('/basic', (req, res) => {
+    res.json( integer)
+    
+})
+
+app.post('/basic', (req, res) => {
+    integer = req.body
+    res.json(integer)
+})
+
 
 app.get('/', (req, res) => {
     res.json( integer)
