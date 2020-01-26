@@ -14,9 +14,10 @@ app.use(express.urlencoded({ extended: true, }))
 
 
 //pozwalamy tylko strona z whitelist
-var whitelist = ['https://chowrat.org/', 'https://chowrat.org/rest', 'https://chowrat.org/rest/https://chowrat.net/','chowrat.org','fd'];
+var whitelist = ['https://chowrat.org', 'https://chowrat.org/', 'https://chowrat.org/rest', 'https://chowrat.org/rest/https://chowrat.net/','chowrat.org','fd'];
 var corsOptions = {
   origin: function (origin, callback) {
+    console.log(origin)
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true)
     } else {
@@ -58,9 +59,10 @@ app.get('/', (req, res) => {
 })
 
 app.post('/', (req, res) => {
-    console.log(req.body)
+    console.log(req.body.value)
     integer = req.body
     res.json(integer)
+    res.status(200);
 })
 
 https.createServer({
