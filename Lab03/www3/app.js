@@ -73,7 +73,8 @@ app.all('/*', function(req, res, next) {
       if(element.login===login){
         if(element.password===password){
           //done(null, array)
-          auth = array
+          auth =element
+          console.log(auth)
           return true
         }
         else{
@@ -112,7 +113,7 @@ passport.use(new JwtStrategy({
   var auth;
   var isAuth = users.find((element, index, array) => {
     if(element.id===jwtPayload.id){
-      auth = array
+      auth = element
       return true
     }
     if(index+1===users.length){
