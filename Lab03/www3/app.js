@@ -10,7 +10,9 @@ var fs = require('fs')
 var path = require('path')
 
 var passport = require('passport')
-var passportjwt = require('passport-jwt')
+var passportJWT = require('passport-jwt')
+var JwtStrategy = passportJWT.Strategy
+var ExtractJwt = passportJWT.ExtractJwt
 var passporthttp = require('passport-http')
 
 app.use(express.json())
@@ -66,35 +68,79 @@ app.all('/*', function(req, res, next) {
   });
 
   passport.use(new passporthttp.BasicStrategy( (login, password, done) => {
-    users.find((element, index, array)=>{
+    var auth;
+    var isAuth = users.find((element, index, array)=>{
       if(element.login===login){
         if(element.password===password){
-          done(null, array)
+          //done(null, array)
+          auth = array
+          return true
         }
         else{
-          done(null, false)
+          //done(null, false)
+          return false
         }
       }
-      if(index+1==users.length){
-        done(null, false)
+      if(index+1===users.length){
+        //done(null, false)
+        return false
       }
     })
+    if(isAuth){
+      done(null, auth)
+    }
+    else{
+      done(null, false)
+    }
   }))
 
-  app.get('/basic', (req, res) => {
-    res.json( integer)
-    
+  app.get('/basic', passport.authenticate('basic', {session: false}), (req, res) => {
+    console.log('hello')
+    res.json( integer) 
 })
 
-app.post('/basic', (req, res) => {
+app.post('/basic', passport.authenticate('basic', {session: false}), (req, res) => {
     integer = req.body
     res.json(integer)
+    res.status(200);
+})
+
+passport.use(new JwtStrategy({
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: 'nieprawdopodobnySekret'
+},(jwtPayload, next)=>{
+  var auth;
+  var isAuth = users.find((element, index, array) => {
+    if(element.id===jwtPayload.id){
+      auth = array
+      return true
+    }
+    if(index+1===users.length){
+      return false
+    }
+  })
+  if(isAuth){
+    next(null, auth)
+  }
+  else{
+    next(null, false)
+  }
+}))
+
+app.get('/jwt', passport.authenticate('jwt', {session: false}), (req, res) => {
+  console.log('hello')
+  res.json( integer) 
+})
+
+app.post('/jwt', passport.authenticate('jwt', {session: false}), (req, res) => {
+  integer = req.body
+  res.json(integer)
+  res.status(200);
 })
 
 
-app.get('/', (req, res) => {
-    res.json( integer)
-    
+/*app.get('/', (req, res) => {
+    res.json( integer) 
 })
 
 app.post('/', (req, res) => {
@@ -102,7 +148,7 @@ app.post('/', (req, res) => {
     integer = req.body
     res.json(integer)
     res.status(200);
-})
+})*/
 
 https.createServer({
   key: fs.readFileSync(path.join(__dirname, 'sec/chowrat.net.key')),

@@ -9,10 +9,16 @@ var path = require('path')
 var forceSsl = require('express-force-ssl');
 var axios = require('axios');
 
+var jwt = require('jsonwebtoken')
+var token = jwt.sign({id: 2}, 'nieprawdopodobnySekret', {expiresIn: 120})
+console.log(token)
+
 const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
   cert: fs.readFileSync(path.join(__dirname,'sec/chowrat.net.crt'))
 })
+
+var auth = {username: "tomek", password: "razdwa3"}
 
 app.use(express.json());
 
@@ -53,9 +59,9 @@ app.get('/', function(req, res){
   res.sendFile('index.html', options)
 })
 
-app.get('/rest', function(req, res){
-  axios.get('https://chowrat.net:3000',{ httpsAgent, 
-  headers: {origin: 'https://chowrat.org/'} })
+/*app.get('/rest', function(req, res){
+  axios.get('https://chowrat.net:3000/basic',{ httpsAgent, 
+  headers: {origin: 'https://chowrat.org/'}, auth: auth })
   .then((rest) => {
     //console.log(rest.data);
     res.send(rest.data);
@@ -65,7 +71,25 @@ app.get('/rest', function(req, res){
 
 app.post('/rest', function(req, res){
   //console.log({value: req.body.value})
-  axios.post('https://chowrat.net:3000/', {value: req.body.value}, {httpsAgent, headers: {origin: 'https://chowrat.org/'}})
+  axios.post('https://chowrat.net:3000/basic', {value: req.body.value}, {httpsAgent, headers: {origin: 'https://chowrat.org/'}, auth: auth })
+  .then((response) => {
+    res.send(response.data)
+  })
+})*/
+
+app.get('/rest', function(req, res){
+  axios.get('https://chowrat.net:3000/jwt',{ httpsAgent, 
+  headers: {origin: 'https://chowrat.org/', 'Authorization': `Bearer ${token}` } })
+  .then((rest) => {
+    //console.log(rest.data);
+    res.send(rest.data);
+    //console.log(rest.data)
+  });
+});
+
+app.post('/rest', function(req, res){
+  //console.log({value: req.body.value})
+  axios.post('https://chowrat.net:3000/jwt', {value: req.body.value}, {httpsAgent, headers: {origin: 'https://chowrat.org/', 'Authorization': `Bearer ${token}`} })
   .then((response) => {
     res.send(response.data)
   })
